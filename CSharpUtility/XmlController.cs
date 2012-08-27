@@ -156,6 +156,11 @@ namespace CSharpUtility
                                 //属性を確認しない場合
                                 if (attributes == null)
                                 {
+                                    if (reader.ReadString() == null)
+                                    {
+                                        return "";
+                                    }
+
                                     return reader.ReadString();
                                 }
 
@@ -182,6 +187,11 @@ namespace CSharpUtility
 
                                     if (count == reader.AttributeCount)
                                     {
+                                        if (reader.ReadString() == null)
+                                        {
+                                            return "";
+                                        }
+
                                         return reader.ReadString();
                                     }
 
