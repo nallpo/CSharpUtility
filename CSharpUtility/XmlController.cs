@@ -209,7 +209,7 @@ namespace CSharpUtility
             }
 
             reader.ResetState();
-            return null;
+            return "";
         }
 
         /// <summary>
