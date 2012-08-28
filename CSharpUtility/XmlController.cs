@@ -34,7 +34,7 @@ namespace CSharpUtility
     //  xc.openWriter();                                                                //書き込み開始
     //  xc.Save(xd);                                                                    //書き込み処理
     //  xc.closeWriter();                                                               //書き込み終了
-    
+
     class XmlController
     {
         //xmlファイルパス
@@ -66,7 +66,7 @@ namespace CSharpUtility
         /// <summary>
         /// XmlTextReaderを開く
         /// </summary>
-        public void openReader()
+        private void openReader()
         {
             fs = new FileStream(xmlPath, FileMode.Open, FileAccess.Read);
             reader = new XmlTextReader(fs);
@@ -75,7 +75,7 @@ namespace CSharpUtility
         /// <summary>
         /// XmlTextWriterを開く
         /// </summary>
-        public void openWriter()
+        private void openWriter()
         {
             fs = new FileStream(xmlPath, FileMode.Create, FileAccess.Write);
             writer = new XmlTextWriter(fs, System.Text.Encoding.Default);
@@ -84,7 +84,7 @@ namespace CSharpUtility
         /// <summary>
         /// XmlTextReaderを終了させる
         /// </summary>
-        public void closeReader()
+        private void closeReader()
         {
             reader.Close();
             fs.Close();
@@ -93,7 +93,7 @@ namespace CSharpUtility
         /// <summary>
         /// XmlTextWriterを終了させる
         /// </summary>
-        public void closeWriter()
+        private void closeWriter()
         {
             writer.Close();
             fs.Close();
@@ -108,6 +108,10 @@ namespace CSharpUtility
         /// <returns>ノードの値</returns>
         public string getElementValue(string[] elements, string[][] attributes = null)
         {
+            openReader();
+
+            string re = "";
+
             //ノード関係
             ArrayList nodes = new ArrayList();
 
@@ -156,12 +160,8 @@ namespace CSharpUtility
                                 //属性を確認しない場合
                                 if (attributes == null)
                                 {
-                                    if (reader.ReadString() == null)
-                                    {
-                                        return "";
-                                    }
-
-                                    return reader.ReadString();
+                                    re = reader.ReadString();
+                                    break;
                                 }
 
                                 //属性を確認する場合
@@ -187,12 +187,8 @@ namespace CSharpUtility
 
                                     if (count == reader.AttributeCount)
                                     {
-                                        if (reader.ReadString() == null)
-                                        {
-                                            return "";
-                                        }
-
-                                        return reader.ReadString();
+                                        re = reader.ReadString();
+                                        break;
                                     }
 
                                     // すべての属性を出力したら、元のノード(エレメントノード)に戻る
@@ -209,7 +205,16 @@ namespace CSharpUtility
             }
 
             reader.ResetState();
-            return "";
+            closeReader();
+
+            if (re != null)
+            {
+                return re;
+            }
+            else
+            {
+                return "";
+            }
         }
 
         /// <summary>
@@ -218,6 +223,8 @@ namespace CSharpUtility
         /// <param name="data">XMLデータデータ</param>
         public void Save(XmlData data)
         {
+            openWriter();
+
             //XMLファイルにインデントを入れる
             writer.Formatting = Formatting.Indented;
 
@@ -227,6 +234,8 @@ namespace CSharpUtility
             data.writeXml(writer);
 
             writer.WriteEndDocument();
+
+            closeWriter();
         }
     }
 
@@ -259,7 +268,7 @@ namespace CSharpUtility
             //ノードを作成
             w.WriteStartElement(nodeName);
 
-            if(nodeChild.Count > 0)
+            if (nodeChild.Count > 0)
             {
                 foreach (KeyValuePair<string, XmlData> kv in nodeChild)
                 {
