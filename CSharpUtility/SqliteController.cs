@@ -9,6 +9,8 @@ namespace CSharpUtility
     //  *使用例 読み込み*
     //
     //  SqliteController sc = new SqliteController("hello.db");
+    //
+    //  sc.open();
     //  sc.setSql("select * from test order by hoge desc limit 3");
     //
     //  SQLiteDataReader reader = sc.read();
@@ -17,12 +19,16 @@ namespace CSharpUtility
     //  {
     //      Console.WriteLine("hoge:" + reader[0] + ", mage:" + reader[1]);
     //  }
+    //  sc.close();
 
     //  *使用例 書き込み*
     //
     //  SqliteController sc = new SqliteController("hello.db");
+    //
+    //  sc.open();
     //  sc.setSql("insert into test (hoge, mage) values('foo', 'bar');");
     //  sc.execute();
+    //  sc.close();
 
     class SqliteController
     {
@@ -34,10 +40,14 @@ namespace CSharpUtility
         {
             con = new SQLiteConnection("Data Source=" + path);
             cmd = con.CreateCommand();
+        }
+
+        public void open()
+        {
             con.Open();
         }
 
-        ~SqliteController()
+        public void close()
         {
             con.Close();
         }
